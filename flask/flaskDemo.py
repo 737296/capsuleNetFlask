@@ -1,3 +1,4 @@
+import pymysql as pymysql
 from flask import request
 from flask import Flask
 import hashlib  # md5加密包
@@ -47,6 +48,31 @@ def sign(appid, mch_id, device_info, body, nonce_str):
     # md5加密
     sign = hashlib.md5(stringSignTemp.encode())
     return sign.hexdigest().upper()
+
+
+@app.route('/selectDb', methods=['GET'])
+def selectDb():
+    conn = pymysql.connect(
+        host="172.25.221.71",
+        port=3307,
+        user="payhub_dev",
+        passwd="payhub@rlzxdl",
+        db="payhub"
+    )
+    cur = conn.cursor()
+    sqlbypaymentnumselect = 'SELECT id FROM payhub.t_pay_core_request WHERE payment_num = "%s"' % (
+        "AF10021447268782980206905")
+    print(sqlbypaymentnumselect)
+    cur.execute(sqlbypaymentnumselect)
+    reqno = cur.fetchone()
+    print(reqno[0])
+    cur.close()
+    conn.close()
+
+    # data['data']['respPaymentNum'] = getPost_data['data']['respPaymentNum']
+    # data['data']['rawNotifyMsg'] = getPost_data['data']['rawNotifyMsg']
+
+    return "1243"
 
 
 if __name__ == '__main__':
