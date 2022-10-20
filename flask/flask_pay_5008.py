@@ -1,13 +1,10 @@
 import json
 import time
-from datetime import time
-
 import pymysql
 from flask import Flask
 from flask import request
 
 app = Flask(__name__)
-
 
 
 # app.config['JSON_AS_ASCII'] = False  #关闭ascii编码方式
@@ -69,27 +66,38 @@ def get_responseData():
     data['data']['payUserId'] = getPost_data['buyer_id']
     data['data']['respPaymentNum'] = getPost_data['out_trade_no']
     data['data']['rawNotifyMsg'] = json.dumps(json.dumps(getPost_data))
-    conn = pymysql.connect(
-        host="172.25.221.71",
-        port= 3307,
-        user="payhub_dev",
-        passwd="payhub@rlzxdl",
-        db="payhub"
-    )
-    cur = conn.cursor()
-    sqlbypaymentnumselect = 'SELECT id FROM payhub.t_pay_core_request WHERE payment_num = "%s"' % (
-    getPost_data['out_trade_no'])
-    print(sqlbypaymentnumselect)
-    cur.execute(sqlbypaymentnumselect)
-    reqno = cur.fetchone()
-    print(reqno[0])
-    cur.close()
-    conn.close()
-    data['data']['reqNo'] = reqno[0]
+
+    # conn = pymysql.connect(
+    #     host="172.25.221.71",
+    #     port= 3307,
+    #     user="payhub_dev",
+    #     passwd="payhub@rlzxdl",
+    #     db="payhub"
+    # )
+    # cur = conn.cursor()
+    # sqlbypaymentnumselect = 'SELECT id FROM payhub.t_pay_core_request WHERE payment_num = "%s"' % (
+    # getPost_data['out_trade_no'])
+    # print(sqlbypaymentnumselect)
+    # cur.execute(sqlbypaymentnumselect)
+    # reqno = cur.fetchone()
+    # print(reqno[0])
+    # cur.close()
+    # conn.close()
+
+    data['data']['reqNo'] = "123"  # reqno[0]
     response = json.dumps(data)
     return response, 200, {"Content-Type": "application/json"}
 
 
+@app.route('/123', methods=['GET'])
+def get_responseData123():
+    return "success!!!"
+
+
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000)
-    # app.run(threaded=True)
+    # app.run(host='172.25.221.70', port=5000)
+    # app.run(processes=5)
+    app.run(host='127.0.0.1', port=5008)
+    # app.run(host='172.25.221.70', port=5000, threaded=True, processes=5)
+    # app.run(processes=5)
+
